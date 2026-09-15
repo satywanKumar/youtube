@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import swal from 'sweetalert';
 
 const Signup = () => {
@@ -9,6 +9,9 @@ const Signup = () => {
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
   const [isLoading,setLoading] = useState(false)
+
+  const {setLoginState} = useOutletContext()
+  const navigate = useNavigate()
 
   const api = import.meta.env.VITE_API
   // console.log(api)
@@ -19,13 +22,23 @@ const Signup = () => {
     e.preventDefault()
     setLoading(true)
     console.log(channelName,description,email,password)
-    const data = await axios.post(`${api}/user/signup`,{
+    await axios.post(`${api}/user/signup`,{
       channelName:channelName,
       email:email,
       description:description,
       password:password
     })
-    console.log(data)
+    
+    const data = await axios.post(`${api}/user/login`,{
+      email:email,
+      password:password
+    })
+    console.log(data.data)
+    localStorage.setItem('channelName',data.data.channelName)
+    localStorage.setItem('token',data.data.token)
+    // localStorage.setItem('isLogin',true)
+    setLoginState(true);
+    navigate('/home')
     setLoading(false)
     
    }

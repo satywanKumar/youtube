@@ -1,8 +1,9 @@
 import { useState } from "react"
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 
 const NavBar = () => {
   const [isLogin,setLogin] = useState(localStorage.getItem('isLogin'))
+  const navigate = useNavigate()
 
   const setLoginState = (state)=>
   {
@@ -13,6 +14,7 @@ const NavBar = () => {
   const logout = ()=>{
     localStorage.clear()
     setLogin(false)
+    navigate('/home')
   }
   return (
     <div>
@@ -24,7 +26,7 @@ const NavBar = () => {
                 <Link className="menu-link" to="/">Home</Link>
                 {!(localStorage.getItem('isLogin')) && <Link className="menu-link" to="/login">Login</Link>}
                 {localStorage.getItem('isLogin') && <Link className="menu-link" to = '/add-video'>Upload Video</Link>}
-                {localStorage.getItem('isLogin') && <Link className="menu-link" to = "/profile">Hello, Satywan</Link>}
+                {localStorage.getItem('isLogin') && <Link className="menu-link" to = "/profile">{localStorage.getItem('channelName')}</Link>}
                 {localStorage.getItem('isLogin') && <span onClick={logout} className="logout"><i className="fa-solid fa-right-from-bracket"></i> Logout</span>}
             </div>
         </div>
